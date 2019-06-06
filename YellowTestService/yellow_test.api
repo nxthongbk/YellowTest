@@ -1,0 +1,23 @@
+/**
+ * @Description Check SIM state
+ *
+ * @return
+ *  return LE_OK if success, otherwise LE_FAULT  
+**/
+
+FUNCTION le_result_t CheckSimState
+(
+);
+
+/**
+ * @Description Check signal strength quality
+ * @parameter [OUT] qual (signal strength quality)
+ * @return
+ *  return LE_OK if success, otherwise LE_FAULT  
+**/
+
+FUNCTION le_result_t MeasureSingalstrength
+(
+    uint32 qual OUT
+);
+
