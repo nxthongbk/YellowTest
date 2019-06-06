@@ -1,0 +1,11 @@
+sources:
+{
+	YellowTestComponent.c
+}
+requires:
+{
+    api:
+    {
+        $CURDIR/../../YellowTestService/yellow_test.api
+    }
+}

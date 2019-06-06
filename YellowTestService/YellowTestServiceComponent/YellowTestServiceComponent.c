@@ -31,7 +31,7 @@ le_result_t yellow_test_CheckSimState(void)
  *
  */
 //--------------------------------------------------------------------------------------------------
-le_result_t yellow_test_MeasureSingalstrength
+le_result_t yellow_test_MeasureSignalStrength
 (
     uint32_t* qual
 )

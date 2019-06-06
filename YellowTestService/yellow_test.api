@@ -16,7 +16,7 @@ FUNCTION le_result_t CheckSimState
  *  return LE_OK if success, otherwise LE_FAULT  
 **/
 
-FUNCTION le_result_t MeasureSingalstrength
+FUNCTION le_result_t MeasureSignalStrength
 (
     uint32 qual OUT
 );
