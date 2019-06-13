@@ -16,14 +16,12 @@
 
 char i2c_bus[256] = "/dev/i2c-0";
 
-
 //--------------------------------------------------------------------------------------------------
 /**
  * Configure I2C hub to enable port I2C .
  *
  */
 //--------------------------------------------------------------------------------------------------
-
 int i2c_hub_select_port(uint8_t hub_address, uint8_t port)
 {
     int result = 0;
@@ -55,7 +53,6 @@ int i2c_hub_select_port(uint8_t hub_address, uint8_t port)
  *
  */
 //--------------------------------------------------------------------------------------------------
-
 le_result_t yellow_test_CheckSimState(void)
 {
     le_sim_States_t state;
@@ -132,7 +129,6 @@ le_result_t yellow_test_MainBusI2C
  *
  */
 //--------------------------------------------------------------------------------------------------
-
 le_result_t yellow_test_Port1HubI2C
 (
     const char* LE_NONNULL gyroAddr,
@@ -173,7 +169,6 @@ le_result_t yellow_test_Port1HubI2C
  *
  */
 //--------------------------------------------------------------------------------------------------
-
 le_result_t yellow_test_Port2HubI2C
 (
     const char* LE_NONNULL opt3002,
@@ -251,6 +246,12 @@ le_result_t yellow_test_Port3HubI2C
     return LE_OK;
 } 
 
+//--------------------------------------------------------------------------------------------------
+/**
+ * Check: Read compass heading.
+ *
+ */
+//--------------------------------------------------------------------------------------------------
 le_result_t yellow_test_AcceGyroRead
 (
     uint8_t reg,
