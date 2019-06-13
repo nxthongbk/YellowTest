@@ -8,10 +8,10 @@
 #include "legato.h"
 #include "interfaces.h"
 
-#define I2C_HUB_PORT_3  0x08
+#define I2C_HUB_PORT_3      0x08
 #define I2C_HUB_PORT_IOT    0x01
-#define I2C_HUB_PORT_2   0x04
-#define I2C_HUB_PORT_1    0x02
+#define I2C_HUB_PORT_2      0x04
+#define I2C_HUB_PORT_1      0x02
 #define I2C_HUB_PORT_ALL    0x0F
 
 char i2c_bus[256] = "/dev/i2c-0";
@@ -58,19 +58,19 @@ int i2c_hub_select_port(uint8_t hub_address, uint8_t port)
 
 le_result_t yellow_test_CheckSimState(void)
 {
-	le_sim_States_t state;
-	le_result_t res = le_sim_SelectCard(LE_SIM_EXTERNAL_SLOT_1);
-	LE_ASSERT(res == LE_OK);
+    le_sim_States_t state;
+    le_result_t res = le_sim_SelectCard(LE_SIM_EXTERNAL_SLOT_1);
+    LE_ASSERT(res == LE_OK);
 
-	state = le_sim_GetState(LE_SIM_EXTERNAL_SLOT_1);
-	if (LE_SIM_READY == state)
-	{
-		return LE_OK;
-	}
-	else
-	{
-		return LE_FAULT;
-	}
+    state = le_sim_GetState(LE_SIM_EXTERNAL_SLOT_1);
+    if (LE_SIM_READY == state)
+    {
+        return LE_OK;
+    }
+    else
+    {
+    return LE_FAULT;
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
