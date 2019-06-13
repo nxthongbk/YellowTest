@@ -251,6 +251,27 @@ le_result_t yellow_test_Port3HubI2C
     return LE_OK;
 } 
 
+le_result_t yellow_test_AcceGyroRead
+(
+    uint8_t reg,
+    uint8_t* data
+)
+{
+    int i2c_fd = open(i2c_bus, O_RDWR);
+    if (i2c_fd < 0) {
+        LE_ERROR("i2cSendByte: failed to open %s", i2c_bus);
+    }
+    if (ioctl(i2c_fd, I2C_SLAVE_FORCE, BMI160_I2C_ADDR) < 0) {
+        LE_ERROR("Could not set address to 0x%02x: %s\n",
+               BMI160_I2C_ADDR,
+               strerror(errno));
+        return LE_FAULT;
+    }
+    *data = i2c_smbus_read_byte_data(i2c_fd, reg);
+    close(i2c_fd);
+    return LE_OK;
+}
+
 
 COMPONENT_INIT
 {
