@@ -88,7 +88,4 @@ COMPONENT_INIT
         LE_INFO("Read accelerometer and gyroscope: FAILED\n");
         return;
     }    
-
-
-
 }
