@@ -20,7 +20,7 @@ processes:
     maxFileBytes: 512K
 }
 
-Start: manual
+start: manual
 
 bindings:
 {
