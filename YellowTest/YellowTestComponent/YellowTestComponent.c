@@ -1,19 +1,24 @@
 #include "legato.h"
 #include "interfaces.h"
 
+#define BMI160_REG_CHIP_ID 0x00
+
 
 COMPONENT_INIT
 {
-    LE_INFO("Yellow Test App start");
+    LE_INFO("Yellow Automation Test App start");
+    putenv("PATH=/legato/systems/current/bin:/usr/local/bin:"
+             "/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin");
 
     le_result_t res;
     uint32_t signal_qual = 0;
-
+    uint8_t data = 10;
+   
     //Check external SIM card state
     res = yellow_test_CheckSimState();
     if (LE_FAULT == res)
     {
-            LE_ERROR("Check external SIM card state FAILED");
+        LE_ERROR("Check external SIM card state FAILED");
     }
 
     //Measure signal strength
@@ -28,8 +33,9 @@ COMPONENT_INIT
         LE_INFO("Check signal quality: FAILED\n");
     }
 
-    //Check main bus i2c
-    res = yellow_test_MainBusI2C("50", "08", "71", "34");
+   
+    //heck main bus i2c
+    res = yellow_test_MainBusI2C();
     if (res == LE_OK)
     {
         LE_INFO("Check main bus I2C: PASSED\n");
@@ -41,7 +47,7 @@ COMPONENT_INIT
     }
 
     //Check port 1 I2C address
-    res = yellow_test_Port1HubI2C("68", "76");
+    res = yellow_test_Port1HubI2C();
     if (res == LE_OK)
     {
         LE_INFO("Check port 1 hub I2C: PASSED\n");
@@ -53,7 +59,7 @@ COMPONENT_INIT
     }
 
     //Check port 2 I2C address
-    res = yellow_test_Port2HubI2C("44", "6B", "55");
+    res = yellow_test_Port2HubI2C();
     if (res == LE_OK)
     {
         LE_INFO("Check port 2 hub I2C: PASSED\n");
@@ -65,7 +71,7 @@ COMPONENT_INIT
     }
 
     //Check port 3 I2C address
-    res = yellow_test_Port3HubI2C("3E", "51", "55");
+    res = yellow_test_Port3HubI2C();
     if (res == LE_OK)
     {
         LE_INFO("Check port 3 hub I2C: PASSED\n");
@@ -87,5 +93,5 @@ COMPONENT_INIT
     {
         LE_INFO("Read accelerometer and gyroscope: FAILED\n");
         return;
-    }    
+    }
 }

@@ -1,7 +1,8 @@
 sources:
 {
-	YellowTestComponent.c
+    YellowTestComponent.c
 }
+
 requires:
 {
     api:

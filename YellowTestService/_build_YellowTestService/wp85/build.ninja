@@ -1,0 +1,185 @@
+# Build script for application 'YellowTestService'
+
+# == Auto-generated file.  Do not edit. ==
+
+builddir =/home/nxthong/GIT/YellowTest/YellowTestService/_build_YellowTestService/wp85
+
+cFlags = -I /home/nxthong/GIT/YellowTest/YellowTestService/_build_YellowTestService/wp85 -I/home/nxthong/MangOH/legato-19.01.0/interfaces -I/home/nxthong/MangOH/legato-19.01.0/framework/include -I/home/nxthong/GIT/YellowTest/YellowTestService
+
+cxxFlags = -I /home/nxthong/GIT/YellowTest/YellowTestService/_build_YellowTestService/wp85 -I/home/nxthong/MangOH/legato-19.01.0/interfaces -I/home/nxthong/MangOH/legato-19.01.0/framework/include -I/home/nxthong/GIT/YellowTest/YellowTestService
+
+ldFlags =
+
+target = wp85
+
+ifgenFlags =  --import-dir /home/nxthong/MangOH/legato-19.01.0/interfaces --import-dir /home/nxthong/MangOH/legato-19.01.0/framework/include --import-dir /home/nxthong/GIT/YellowTest/YellowTestService
+
+rule CompileC
+  description = Compiling C source
+  depfile = $out.d
+  command =  /opt/swi/SWI9X15Y_07.13.05.00/sysroots/x86_64-pokysdk-linux/usr/bin/arm-poky-linux-gnueabi/arm-poky-linux-gnueabi-gcc --sysroot=/opt/swi/SWI9X15Y_07.13.05.00/sysroots/armv7a-neon-poky-linux-gnueabi -MMD -MF $out.d -c $in -o $out -DLE_FILENAME=`basename $in` -Wall -fPIC -Werror -fvisibility=hidden -DMK_TOOLS_BUILD  -DLEGATO_EMBEDDED $cFlags
+
+rule CompileCxx
+  description = Compiling C++ source
+  depfile = $out.d
+  command =  /opt/swi/SWI9X15Y_07.13.05.00/sysroots/x86_64-pokysdk-linux/usr/bin/arm-poky-linux-gnueabi/arm-poky-linux-gnueabi-g++ --sysroot=/opt/swi/SWI9X15Y_07.13.05.00/sysroots/armv7a-neon-poky-linux-gnueabi -MMD -MF $out.d -c $in -o $out -DLE_FILENAME=`basename $in` -Wall -fPIC -Werror -fvisibility=hidden  -DMK_TOOLS_BUILD  -DLEGATO_EMBEDDED $cxxFlags
+
+rule LinkCLib
+  description = Linking C library
+  command =  /opt/swi/SWI9X15Y_07.13.05.00/sysroots/x86_64-pokysdk-linux/usr/bin/arm-poky-linux-gnueabi/arm-poky-linux-gnueabi-gcc --sysroot=/opt/swi/SWI9X15Y_07.13.05.00/sysroots/armv7a-neon-poky-linux-gnueabi -shared -o $out $in $ldFlags
+
+rule LinkCxxLib
+  description = Linking C++ library
+  command =  /opt/swi/SWI9X15Y_07.13.05.00/sysroots/x86_64-pokysdk-linux/usr/bin/arm-poky-linux-gnueabi/arm-poky-linux-gnueabi-g++ --sysroot=/opt/swi/SWI9X15Y_07.13.05.00/sysroots/armv7a-neon-poky-linux-gnueabi -shared -o $out $in $ldFlags
+
+rule LinkCExe
+  description = Linking C executable
+  command =  /opt/swi/SWI9X15Y_07.13.05.00/sysroots/x86_64-pokysdk-linux/usr/bin/arm-poky-linux-gnueabi/arm-poky-linux-gnueabi-gcc --sysroot=/opt/swi/SWI9X15Y_07.13.05.00/sysroots/armv7a-neon-poky-linux-gnueabi -fPIE -pie -o $out $in $ldFlags
+
+rule LinkCxxExe
+  description = Linking C++ executable
+  command =  /opt/swi/SWI9X15Y_07.13.05.00/sysroots/x86_64-pokysdk-linux/usr/bin/arm-poky-linux-gnueabi/arm-poky-linux-gnueabi-g++ --sysroot=/opt/swi/SWI9X15Y_07.13.05.00/sysroots/armv7a-neon-poky-linux-gnueabi -fPIE -pie -o $out $in $ldFlags
+
+rule CompileJava
+  description = Compiling Java source
+  command = javac -cp $classPath -d `dirname $out` $in && touch $out
+
+rule MakeJar
+  description = Making JAR file
+  command = INDIR=`dirname $in`; find $$INDIR -name '*.class' -printf "-C $$INDIR\n%P\n"|xargs jar -cf $out
+
+rule MakeKernelModule
+  description = Build kernel driver module
+  depfile = $out.d
+  command = make -C $in
+
+rule BuildExternal
+  description = Running external build step
+  command = cd $builddir/$workingdir && $
+            export CFLAGS="--sysroot=/opt/swi/SWI9X15Y_07.13.05.00/sysroots/armv7a-neon-poky-linux-gnueabi $cFlags" $
+            CXXFLAGS="--sysroot=/opt/swi/SWI9X15Y_07.13.05.00/sysroots/armv7a-neon-poky-linux-gnueabi $cxxFlags" $
+            LDFLAGS="--sysroot=/opt/swi/SWI9X15Y_07.13.05.00/sysroots/armv7a-neon-poky-linux-gnueabi $ldFlags" $
+            PATH="$${LEGATO_ROOT}/bin:/opt/swi/SWI9X15Y_07.13.05.00/sysroots/x86_64-pokysdk-linux/usr/bin/arm-poky-linux-gnueabi:/opt/swi/SWI9X15Y_07.13.05.00/sysroots/x86_64-pokysdk-linux/usr/bin:/opt/swi/SWI9X15Y_07.13.05.00/sysroots/x86_64-pokysdk-linux/bin:/opt/swi/SWI9X15Y_07.13.05.00/sysroots/x86_64-pokysdk-linux/sbin:$$PATH" $
+            && $
+            $externalCommand
+
+rule GenInterfaceCode
+  description = Generating IPC interface code
+  command = ifgen --output-dir $outputDir $ifgenFlags $in
+
+rule GenPyApiCExtension
+  description = Generating Python API C Extension
+  command = cextgenerator.py $in -o $workDir > /dev/null
+rule CopyFile
+  description = Copying file
+  command = cp -d -f -T $in $out
+
+rule RegenNinjaScript
+  description = Regenerating build script
+  generator = 1
+  command = mkapp --dont-run-ninja "-t" "wp85" "YellowTestService.adef"
+
+rule BundleFile
+  description = Bundling file
+  command = legato-install -m $modeFlags $in $out
+
+rule MakeAppInfoProperties
+  description = Creating info.properties
+  command = rm -f $out && $
+            md5=$$( ( cd $workingDir/staging && $
+                      find -P -print0 |LC_ALL=C sort -z && $
+                      find -P -type f -print0 |LC_ALL=C sort -z |xargs -0 md5sum && $
+                      find -P -type l -print0 |LC_ALL=C sort -z |xargs -0 -r -n 1 readlink $
+                    ) | md5sum) && $
+            md5=$${md5%% *} && $
+            ( echo "app.name=$name" && $
+              echo "app.md5=$$md5" && $
+              echo "app.version=$version" && $
+              echo "legato.version=`cat $$LEGATO_ROOT/version`" $
+            ) > $out
+
+rule PackApp
+  description = Packaging app
+  command = $
+            mtime=`stat -c %Y $adefPath` && $
+            find $workingDir/staging -exec touch --no-dereference --date=@$$mtime {} \; && $
+            (cd $workingDir/staging && find . -print0 | LC_ALL=C sort -z |tar --no-recursion --null -T - -cjf - ) > $workingDir/$name.$target && $
+            tarballSize=`stat -c '%s' $workingDir/$name.$target` && $
+            md5=`grep '^app.md5=' $in | sed 's/^app.md5=//'` && $
+            ( printf '{\n' && $
+              printf '"command":"updateApp",\n' && $
+              printf '"name":"$name",\n' && $
+              printf '"version":"$version",\n' && $
+              printf '"md5":"%s",\n' "$$md5" && $
+              printf '"size":%s\n' "$$tarballSize" && $
+              printf '}' && $
+              cat $workingDir/$name.$target $
+            ) > $out
+
+rule BinPackApp
+  description = Packaging app for distribution.
+  command = cp -r $stagingDir/* $workingDir/ && $
+            rm $workingDir/info.properties $workingDir/root.cfg && $
+            mtime=`stat -c %Y $adefPath` && $
+            find $workingDir -exec touch  --no-dereference --date=@$$mtime {} \; && $
+            (cd $workingDir/ && find . -print0 |LC_ALL=C sort -z  |tar --no-recursion --null -T - -cjf - ) > $out
+
+build $builddir/api/07727689a24410b2d32c15a6a957ee17/client/le_mdmDefs_interface.h: GenInterfaceCode /home/nxthong/MangOH/legato-19.01.0/interfaces/modemServices/le_mdmDefs.api |
+  outputDir = $builddir/api/07727689a24410b2d32c15a6a957ee17/client
+  ifgenFlags = --gen-interface $ifgenFlags
+
+build $builddir/api/ce510d07a92744ac29f068c04d36eace/client/le_sim_client.c.o: CompileC $builddir/api/ce510d07a92744ac29f068c04d36eace/client/le_sim_client.c | $builddir/api/ce510d07a92744ac29f068c04d36eace/client/le_sim_messages.h $builddir/api/ce510d07a92744ac29f068c04d36eace/client/le_sim_interface.h $builddir/api/07727689a24410b2d32c15a6a957ee17/client/le_mdmDefs_interface.h
+  cFlags = $cFlags -I$builddir/api/07727689a24410b2d32c15a6a957ee17/client
+
+build $builddir/api/ce510d07a92744ac29f068c04d36eace/client/le_sim_client.c $builddir/api/ce510d07a92744ac29f068c04d36eace/client/le_sim_interface.h $builddir/api/ce510d07a92744ac29f068c04d36eace/client/le_sim_messages.h: GenInterfaceCode /home/nxthong/MangOH/legato-19.01.0/interfaces/modemServices/le_sim.api | /home/nxthong/MangOH/legato-19.01.0/interfaces/modemServices/le_mdmDefs.api
+  ifgenFlags = --gen-client --gen-interface --gen-local --name-prefix le_sim $ifgenFlags
+  outputDir = $builddir/api/ce510d07a92744ac29f068c04d36eace/client
+
+build $builddir/api/a0c34a7657a8f605478f660ab2475bb0/client/le_mrc_client.c.o: CompileC $builddir/api/a0c34a7657a8f605478f660ab2475bb0/client/le_mrc_client.c | $builddir/api/a0c34a7657a8f605478f660ab2475bb0/client/le_mrc_messages.h $builddir/api/a0c34a7657a8f605478f660ab2475bb0/client/le_mrc_interface.h
+  cFlags = $cFlags
+
+build $builddir/api/a0c34a7657a8f605478f660ab2475bb0/client/le_mrc_client.c $builddir/api/a0c34a7657a8f605478f660ab2475bb0/client/le_mrc_interface.h $builddir/api/a0c34a7657a8f605478f660ab2475bb0/client/le_mrc_messages.h: GenInterfaceCode /home/nxthong/MangOH/legato-19.01.0/interfaces/modemServices/le_mrc.api |
+  ifgenFlags = --gen-client --gen-interface --gen-local --name-prefix le_mrc $ifgenFlags
+  outputDir = $builddir/api/a0c34a7657a8f605478f660ab2475bb0/client
+
+build $builddir/api/da8b020374aa9974d2ea272aaa21547a/server/yellow_test_server.o: CompileC $builddir/api/da8b020374aa9974d2ea272aaa21547a/server/yellow_test_server.c | $builddir/api/da8b020374aa9974d2ea272aaa21547a/server/yellow_test_messages.h $builddir/api/da8b020374aa9974d2ea272aaa21547a/server/yellow_test_server.h
+  cFlags = $cFlags
+
+build $builddir/api/da8b020374aa9974d2ea272aaa21547a/server/yellow_test_server.c $builddir/api/da8b020374aa9974d2ea272aaa21547a/server/yellow_test_server.h $builddir/api/da8b020374aa9974d2ea272aaa21547a/server/yellow_test_messages.h: GenInterfaceCode /home/nxthong/GIT/YellowTest/YellowTestService/yellow_test.api |
+  ifgenFlags = --gen-server --gen-server-interface --gen-local --name-prefix yellow_test $ifgenFlags
+  outputDir = $builddir/api/da8b020374aa9974d2ea272aaa21547a/server
+
+build /home/nxthong/GIT/YellowTest/YellowTestService/_build_YellowTestService/wp85/staging/read-only/lib/libComponent_YellowTestServiceComponent.so: LinkCLib $builddir/component/64ab04eae7633023774b0d1d1dfc5c4d/obj/63a7ca6c9b62b606b5a94b9147f7baed.o $builddir/api/ce510d07a92744ac29f068c04d36eace/client/le_sim_client.c.o $builddir/api/a0c34a7657a8f605478f660ab2475bb0/client/le_mrc_client.c.o $builddir/api/da8b020374aa9974d2ea272aaa21547a/server/yellow_test_server.o $builddir/component/64ab04eae7633023774b0d1d1dfc5c4d/obj/_componentMain.c.o | /home/nxthong/MangOH/legato-19.01.0/build/wp85/framework/lib/liblegato.so
+  ldFlags =  -L/home/nxthong/GIT/YellowTest/YellowTestService/_build_YellowTestService/wp85/staging/read-only/lib -Wl,--enable-new-dtags,-rpath="\$$ORIGIN/../lib" "-L$$LEGATO_BUILD/framework/lib" -llegato -lpthread -lrt -lm
+
+build $builddir/component/64ab04eae7633023774b0d1d1dfc5c4d/obj/63a7ca6c9b62b606b5a94b9147f7baed.o: CompileC /home/nxthong/GIT/YellowTest/YellowTestService/YellowTestServiceComponent/YellowTestServiceComponent.c || $builddir/api/da8b020374aa9974d2ea272aaa21547a/server/yellow_test_server.h $builddir/api/da8b020374aa9974d2ea272aaa21547a/server/yellow_test_messages.h $builddir/api/ce510d07a92744ac29f068c04d36eace/client/le_sim_interface.h $builddir/api/ce510d07a92744ac29f068c04d36eace/client/le_sim_messages.h $builddir/api/a0c34a7657a8f605478f660ab2475bb0/client/le_mrc_interface.h $builddir/api/a0c34a7657a8f605478f660ab2475bb0/client/le_mrc_messages.h $builddir/api/07727689a24410b2d32c15a6a957ee17/client/le_mdmDefs_interface.h 
+  cFlags = $cFlags -I$builddir/component/64ab04eae7633023774b0d1d1dfc5c4d/src -I$builddir/api/da8b020374aa9974d2ea272aaa21547a/server -I$builddir/api/ce510d07a92744ac29f068c04d36eace/client -I$builddir/api/a0c34a7657a8f605478f660ab2475bb0/client -I$builddir/api/07727689a24410b2d32c15a6a957ee17/client -DLE_COMPONENT_NAME=YellowTestServiceComponent -DLE_LOG_SESSION=YellowTestServiceComponent_LogSession  -DLE_LOG_LEVEL_FILTER_PTR=YellowTestServiceComponent_LogLevelFilterPtr  "-DCOMPONENT_INIT=LE_CI_LINKAGE LE_SHARED void _YellowTestServiceComponent_COMPONENT_INIT()" -std=c99
+
+build $builddir/component/64ab04eae7633023774b0d1d1dfc5c4d/obj/_componentMain.c.o: CompileC $builddir/component/64ab04eae7633023774b0d1d1dfc5c4d/src/_componentMain.c
+  cFlags = $cFlags -I$builddir/component/64ab04eae7633023774b0d1d1dfc5c4d/src -I$builddir/api/da8b020374aa9974d2ea272aaa21547a/server -I$builddir/api/ce510d07a92744ac29f068c04d36eace/client -I$builddir/api/a0c34a7657a8f605478f660ab2475bb0/client -I$builddir/api/07727689a24410b2d32c15a6a957ee17/client -DLE_COMPONENT_NAME=YellowTestServiceComponent -DLE_LOG_SESSION=YellowTestServiceComponent_LogSession  -DLE_LOG_LEVEL_FILTER_PTR=YellowTestServiceComponent_LogLevelFilterPtr  "-DCOMPONENT_INIT=LE_CI_LINKAGE LE_SHARED void _YellowTestServiceComponent_COMPONENT_INIT()"
+
+build $builddir/app/YellowTestService/obj/yellowtestservice/_main.c.o: CompileC /home/nxthong/GIT/YellowTest/YellowTestService/_build_YellowTestService/wp85/app/YellowTestService/src/yellowtestservice/_main.c
+  cFlags = $cFlags -DLE_COMPONENT_NAME=yellowtestservice_exe -DLE_LOG_SESSION=yellowtestservice_exe_LogSession -DLE_LOG_LEVEL_FILTER_PTR=yellowtestservice_exe_LogLevelFilterPtr 
+
+build $builddir/app/YellowTestService/obj/yellowtestservice/yellowtestservice: LinkCExe $builddir/app/YellowTestService/obj/yellowtestservice/_main.c.o | /home/nxthong/GIT/YellowTest/YellowTestService/_build_YellowTestService/wp85/staging/read-only/lib/libComponent_YellowTestServiceComponent.so /home/nxthong/MangOH/legato-19.01.0/build/wp85/framework/lib/liblegato.so /home/nxthong/MangOH/legato-19.01.0/build/$target/framework/lib/liblegato.so
+  ldFlags = -rdynamic -Wl,--enable-new-dtags,-rpath="\$$ORIGIN/../lib" -L/home/nxthong/GIT/YellowTest/YellowTestService/_build_YellowTestService/wp85/staging/read-only/lib "-L/home/nxthong/GIT/YellowTest/YellowTestService/_build_YellowTestService/wp85/staging/read-only/lib" -lComponent_YellowTestServiceComponent "-L$$LEGATO_BUILD/framework/lib" -llegato -lpthread -lrt -ldl -lm $ldFlags
+
+build $builddir/app/YellowTestService/staging/read-only/lib/libComponent_YellowTestServiceComponent.so : BundleFile /home/nxthong/GIT/YellowTest/YellowTestService/_build_YellowTestService/wp85/staging/read-only/lib/libComponent_YellowTestServiceComponent.so
+  modeFlags = u+rw+x,g+r+x,o+x+r-w
+
+build $builddir/app/YellowTestService/staging/read-only/bin/yellowtestservice : BundleFile $builddir/app/YellowTestService/obj/yellowtestservice/yellowtestservice
+  modeFlags = u+rw+x,g+r+x,o+x+r-w
+
+build $builddir/app/YellowTestService/staging/info.properties : MakeAppInfoProperties | $builddir/app/YellowTestService/staging/read-only/lib/libComponent_YellowTestServiceComponent.so $builddir/app/YellowTestService/staging/read-only/bin/yellowtestservice $builddir/app/YellowTestService/staging/root.cfg
+  name = YellowTestService
+  version = 1.0.0
+  workingDir = $builddir/app/YellowTestService
+
+build YellowTestService.$target.update: PackApp $builddir/app/YellowTestService/staging/info.properties
+  name = YellowTestService
+  adefPath = /home/nxthong/GIT/YellowTest/YellowTestService/YellowTestService.adef
+  version = 1.0.0
+  workingDir = $builddir/app/YellowTestService
+
+build /home/nxthong/GIT/YellowTest/YellowTestService/_build_YellowTestService/wp85/build.ninja: RegenNinjaScript | /home/nxthong/GIT/YellowTest/YellowTestService/YellowTestServiceComponent/Component.cdef /home/nxthong/GIT/YellowTest/YellowTestService/yellow_test.api /home/nxthong/MangOH/legato-19.01.0/interfaces/modemServices/le_mdmDefs.api /home/nxthong/MangOH/legato-19.01.0/interfaces/modemServices/le_mrc.api /home/nxthong/MangOH/legato-19.01.0/interfaces/modemServices/le_sim.api
+

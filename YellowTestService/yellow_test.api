@@ -21,3 +21,61 @@ FUNCTION le_result_t MeasureSignalStrength
     uint32 qual OUT
 );
 
+
+/**
+ * @Description Check main bus I2C
+ * @return
+ *  return LE_OK if success, otherwise LE_FAULT  
+**/
+
+FUNCTION le_result_t MainBusI2C
+(
+);
+
+/**
+ * @Description Check Port1HubI2C
+ * @return
+ *  return LE_OK if success, otherwise LE_FAULT  
+**/
+
+FUNCTION le_result_t Port1HubI2C
+(
+);
+
+/**
+ * @Description Check Port2HubI2C
+ * @return
+ *  return LE_OK if success, otherwise LE_FAULT  
+**/
+
+FUNCTION le_result_t Port2HubI2C
+(
+);
+
+/**
+ * @Description Check Port3HubI2C
+ * @return
+ *  return LE_OK if success, otherwise LE_FAULT  
+**/
+
+FUNCTION le_result_t Port3HubI2C
+(
+);
+
+/**
+ * @Description Check id Accleerometter and Gyro 
+ * @parameter [IN] reg 
+ * @parameter [OUT] data
+ * @return
+ *  return LE_OK if success, otherwise LE_FAULT  
+**/
+
+FUNCTION le_result_t AcceGyroRead
+(
+    uint8 reg IN,
+    uint8 data OUT
+);
+
+
+
+

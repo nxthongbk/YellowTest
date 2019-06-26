@@ -1,18 +1,14 @@
 #include "legato.h"
 #include "interfaces.h"
-#include <fcntl.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include "i2c-utils.h"
-#include "legato.h"
-#include "interfaces.h"
 
+#define I2C_HUB_MAIN_BUS    0x00
 #define I2C_HUB_PORT_3      0x08
 #define I2C_HUB_PORT_IOT    0x01
 #define I2C_HUB_PORT_2      0x04
 #define I2C_HUB_PORT_1      0x02
 #define I2C_HUB_PORT_ALL    0x0F
+#define BMI160_I2C_ADDR     0x68
 
 char i2c_bus[256] = "/dev/i2c-0";
 
@@ -45,6 +41,42 @@ int i2c_hub_select_port(uint8_t hub_address, uint8_t port)
     }
     close(i2c_fd);
     return result;
+}
+
+
+//--------------------------------------------------------------------------------------------------
+/**
+ * runs the command
+ */
+//--------------------------------------------------------------------------------------------------
+static int RunSystemCommand(
+    char *commandStringPtr)
+{
+    int systemResult;
+
+    if (NULL == commandStringPtr)
+    {
+        LE_ERROR("ERROR Parameter is NULL.");
+        return -1;
+    }
+    if ('\0' == *commandStringPtr)
+    {
+        LE_INFO("INFO Nothing to execute.");
+        return -1;
+    }
+
+    systemResult = system(commandStringPtr);
+    // Return value of -1 means that the fork() has failed (see man system).
+    if (0 == WEXITSTATUS(systemResult))
+    {
+        LE_INFO("Success: %s", commandStringPtr);
+        return 0;
+    }
+    else
+    {
+        LE_ERROR("Error %s Failed: (%d)", commandStringPtr, systemResult);
+        return -1;
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -86,41 +118,48 @@ le_result_t yellow_test_MeasureSignalStrength
     return res;
 }
 
+
 //--------------------------------------------------------------------------------------------------
 /**
  * Check: Main Bus I2C Address.
  *
  */
 //--------------------------------------------------------------------------------------------------
-le_result_t yellow_test_MainBusI2C
-(
-    const char* LE_NONNULL eeprAddr,
-    const char* LE_NONNULL tca9546Addr,
-    const char* LE_NONNULL usb3503Addr,
-    const char* LE_NONNULL addr
-)
+le_result_t yellow_test_MainBusI2C( void )
 {
-    FILE *cmd;
-    char command[256];
-    int buf_size = 8;
-    char bus_address[buf_size];
-    for (int n = 0; n < 2; n++)
+    int res;
+
+    res = i2c_hub_select_port(0x71, I2C_HUB_MAIN_BUS);
+    if (res != 0 )
     {
-        bus_address[n] = eeprAddr[n];
-        bus_address[n+2] = tca9546Addr[n];
-        bus_address[n+4] = usb3503Addr[n];
-        bus_address[n+6] = addr[n];
+        return LE_FAULT;
     }
-    for (int i = 0; i < buf_size; i += 2)
+
+    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 0 | grep \" 50 \"");
+    if (res != 0 )
     {
-        sprintf(command, "/usr/sbin/i2cdetect -y -r 0 | grep \" %c%c \"",
-               bus_address[i], bus_address[i+1]);
-        cmd = popen(command, "r");
-        if (WEXITSTATUS(pclose(cmd)) == 1)
-        {
-            return LE_FAULT;
-        }
+        return LE_FAULT;
     }
+
+    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 0 | grep \" 71 \"");
+    if (res != 0 )
+    {
+        return LE_FAULT;
+    }
+
+
+    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 0 | grep \" 08 \"");
+    if (res != 0 )
+    {
+        return LE_FAULT;
+    }
+
+    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 0 | grep \" 34 \"");
+    if (res != 0 )
+    {
+        return LE_FAULT;
+    }
+
     return LE_OK;
 }
 
@@ -130,40 +169,44 @@ le_result_t yellow_test_MainBusI2C
  *
  */
 //--------------------------------------------------------------------------------------------------
-le_result_t yellow_test_Port1HubI2C
-(
-    const char* LE_NONNULL gyroAddr,
-    const char* LE_NONNULL bme680Addr
-)
+le_result_t yellow_test_Port1HubI2C( void )
 {
-    FILE *cmd;
-    char command[256];
-    int buf_size = 4;
-    char bus_address[buf_size];
     int res;
+
     res = i2c_hub_select_port(0x71, I2C_HUB_PORT_1);
     if (res != 0 )
     {
         return LE_FAULT;
     }
+ 
+    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 0 | grep \" 50 \"");
+    if (res != 0 )
+    {
+        return LE_FAULT;
+    }
 
-    for (int n = 0; n < 2; n++)
+    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 0 | grep \" 71 \"");
+    if (res != 0 )
     {
-        bus_address[n] = gyroAddr[n];
-        bus_address[n+2] = bme680Addr[n];
+        return LE_FAULT;
     }
-    for (int i = 0; i < buf_size; i += 2)
+
+
+    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 0 | grep \" 08 \"");
+    if (res != 0 )
     {
-        sprintf(command, "/usr/sbin/i2cdetect -y -r 0 | grep \" %c%c \"",
-               bus_address[i], bus_address[i+1]);
-        cmd = popen(command, "r");
-        if (WEXITSTATUS(pclose(cmd)) == 1)
-        {
-            return LE_FAULT;
-        }
+        return LE_FAULT;
     }
+
+    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 0 | grep \" 34 \"");
+    if (res != 0 )
+    {
+        return LE_FAULT;
+    }
+
     return LE_OK;
 }
+
 
 //--------------------------------------------------------------------------------------------------
 /**
@@ -171,81 +214,65 @@ le_result_t yellow_test_Port1HubI2C
  *
  */
 //--------------------------------------------------------------------------------------------------
-le_result_t yellow_test_Port2HubI2C
-(
-    const char* LE_NONNULL opt3002,
-    const char* LE_NONNULL bq25601Addr,
-    const char* LE_NONNULL bq27426Addr
-)
+le_result_t yellow_test_Port2HubI2C( void )
 {
-    FILE *cmd;
-    char command[256];
-    int buf_size = 6;
-    char bus_address[buf_size];
     int res;
+
     res = i2c_hub_select_port(0x71, I2C_HUB_PORT_2);
     if (res != 0 )
     {
         return LE_FAULT;
     }
-    for (int n = 0; n < 2; n++)
+
+    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 0 | grep \" 68 \"");
+    if (res != 0 )
     {
-        bus_address[n] = opt3002[n];
-        bus_address[n+2] = bq25601Addr[n];
-        bus_address[n+4] = bq27426Addr[n];
-    }    
-    for (int i = 0; i < buf_size; i += 2)
-    {
-        sprintf(command, "/usr/sbin/i2cdetect -y -r 0 | grep \" %c%c \"",
-               bus_address[i], bus_address[i+1]);
-        cmd = popen(command, "r");
-        if (WEXITSTATUS(pclose(cmd)) == 1)
-        {
-            return LE_FAULT;
-        }
+        return LE_FAULT;
     }
+
+    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 0 | grep \" 76 \"");
+    if (res != 0 )
+    {
+        return LE_FAULT;
+    }
+
     return LE_OK;
 }
 
-//--------------------------------------------------------------------------------------------------
-/**
- * Check: Port 3 I2C Address.
- *
- */
-//--------------------------------------------------------------------------------------------------
-le_result_t yellow_test_Port3HubI2C
-(
-    const char* LE_NONNULL ioExpAddr,
-    const char* LE_NONNULL pcf85063Addr,
-    const char* LE_NONNULL nt3h2211Addr
-)
+// //--------------------------------------------------------------------------------------------------
+// /**
+//  * Check: Port 3 I2C Address.
+//  *
+//  */
+// //--------------------------------------------------------------------------------------------------
+le_result_t yellow_test_Port3HubI2C( void )
 {
-    FILE *cmd;
-    char command[256];
-    int buf_size = 6;
-    int8_t bus_address[buf_size];
     int res;
+
     res = i2c_hub_select_port(0x71, I2C_HUB_PORT_3);
     if (res != 0 )
     {
         return LE_FAULT;
     }
-    for (int n = 0; n < 2; n++)
+
+    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 0 | grep \" 3e \"");
+    if (res != 0 )
     {
-        bus_address[n] = ioExpAddr[n];
-        bus_address[n+2] = pcf85063Addr[n];
-        bus_address[n+4] = nt3h2211Addr[n];
-    } 
-    for (int i = 0; i < buf_size; i += 2)
-    {
-        sprintf(command, "/usr/sbin/i2cdetect -y -r 0 | grep \" %c%c \"", 
-               bus_address[i], bus_address[i+1]);
-        cmd = popen(command, "r");
-        if (WEXITSTATUS(pclose(cmd)) == 1)
-        {
-            return LE_FAULT;
-        }
+        return LE_FAULT;
     }
+
+    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 0 | grep \" 51 \"");
+    if (res != 0 )
+    {
+        return LE_FAULT;
+    }
+
+    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 0 | grep \" 55 \"");
+    if (res != 0 )
+    {
+        return LE_FAULT;
+    }
+
     return LE_OK;
 }
 

@@ -1,13 +1,12 @@
 sources:
 {
-	YellowTestServiceComponent.c
+    YellowTestServiceComponent.c
 }
 
 cflags:
 {
     -std=c99
 }
-
 
 requires:
 {
