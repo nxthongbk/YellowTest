@@ -118,6 +118,65 @@ le_result_t yellow_test_MeasureSignalStrength
     return res;
 }
 
+//--------------------------------------------------------------------------------------------------
+/**
+ * Check: SD Card Read/Write.
+ *
+ */
+//--------------------------------------------------------------------------------------------------
+
+le_result_t yellow_test_SDCard( void )
+{
+    int res;
+
+    res = RunSystemCommand("/sbin/rmmod msm_sdcc");
+    if (res != 0 )
+    {
+        return LE_FAULT;
+    }
+
+    res = RunSystemCommand("/sbin/modprobe msm_sdcc");
+    if (res != 0 )
+    {
+        return LE_FAULT;
+    }
+
+    res = RunSystemCommand("/bin/mkdir /tmp/sd");
+    if (res != 0 )
+    {
+        return LE_FAULT;
+    }
+
+    res = RunSystemCommand("/bin/mount -ofmask=0111 -odmask=0000 -osmackfsdef=sd /dev/mmcblk0p1 /tmp/sd/");
+    if (res != 0 )
+    {
+        return LE_FAULT;
+    }
+
+    //Create file
+    res = RunSystemCommand("/bin/touch /tmp/sd/log.txt");
+    if (res != 0 )
+    {
+        return LE_FAULT;
+    }
+
+    //write file
+    res = RunSystemCommand("/bin/echo foo >> /tmp/sd/log.txt");
+    if (res != 0 )
+    {
+        return LE_FAULT;
+    }
+
+    //read file
+    res = RunSystemCommand("/bin/cat /tmp/sd/log.txt");
+    if (res != 0 )
+    {
+        return LE_FAULT;
+    }
+
+    return LE_OK;
+}
+
 
 //--------------------------------------------------------------------------------------------------
 /**
@@ -301,6 +360,29 @@ le_result_t yellow_test_AcceGyroRead
     *data = i2c_smbus_read_byte_data(i2c_fd, reg);
     close(i2c_fd);
     return LE_OK;
+}
+
+//--------------------------------------------------------------------------------------------------
+/**
+ * Check: Read ADC on IOT Test Card.
+ *
+ */
+//--------------------------------------------------------------------------------------------------
+le_result_t yellow_test_Adc3Read
+(
+    int32_t* value
+)
+{
+    le_result_t result;
+    i2c_hub_select_port(0x71, I2C_HUB_PORT_IOT);
+
+    result = le_adc_ReadValue("EXT_ADC3", value);
+
+    if (result == LE_FAULT)
+    {
+        LE_INFO("Couldn't get ADC value");
+    }
+    return result;
 }
 
 

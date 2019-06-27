@@ -24,13 +24,13 @@ bindings:
 {
     yellowtestservice.YellowTestServiceComponent.le_sim -> modemService.le_sim
     yellowtestservice.YellowTestServiceComponent.le_mrc -> modemService.le_mrc
+    yellowtestservice.YellowTestServiceComponent.le_adc -> modemService.le_adc
 }
 
 requires:
 {
     device:
     {
-        // replace these devices based on your module
         [rw]    /dev/i2c-0  /dev/i2c-0
     }
 }

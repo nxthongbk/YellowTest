@@ -23,6 +23,17 @@ FUNCTION le_result_t MeasureSignalStrength
 
 
 /**
+ * @Description Test SD Card
+ * @return
+ *  return LE_OK if success, otherwise LE_FAULT  
+**/
+
+FUNCTION le_result_t SDCard
+(
+);
+
+
+/**
  * @Description Check main bus I2C
  * @return
  *  return LE_OK if success, otherwise LE_FAULT  
@@ -76,6 +87,16 @@ FUNCTION le_result_t AcceGyroRead
     uint8 data OUT
 );
 
+/**
+ * @Description Check id ADC3
+ * @parameter [OUT] data
+ * @return
+ *  return LE_OK if success, otherwise LE_FAULT  
+**/
 
+FUNCTION le_result_t Adc3Read
+(
+    int32 value OUT
+);
 
 

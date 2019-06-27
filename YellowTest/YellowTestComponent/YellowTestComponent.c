@@ -3,6 +3,8 @@
 
 #define BMI160_REG_CHIP_ID 0x00
 
+int32_t adc3_value = 0;
+
 
 COMPONENT_INIT
 {
@@ -19,6 +21,7 @@ COMPONENT_INIT
     if (LE_FAULT == res)
     {
         LE_ERROR("Check external SIM card state FAILED");
+        return;
     }
 
     //Measure signal strength
@@ -30,10 +33,22 @@ COMPONENT_INIT
     }
     else
     {
-        LE_INFO("Check signal quality: FAILED\n");
+        LE_ERROR("Check signal quality: FAILED\n");
+        return;
     }
 
-   
+    res = yellow_test_SDCard();
+    if(res == LE_OK)
+    {
+        LE_INFO("SDCard Read/Wrire test PASSED");
+    }
+    else
+    {
+        LE_ERROR("SDCard Read/Wrire test FAILED");
+        return;
+    }  
+
+
     //heck main bus i2c
     res = yellow_test_MainBusI2C();
     if (res == LE_OK)
@@ -94,4 +109,17 @@ COMPONENT_INIT
         LE_INFO("Read accelerometer and gyroscope: FAILED\n");
         return;
     }
+
+
+    //Test ADC IOT Test Card
+    res = yellow_test_Adc3Read(&adc3_value);
+    if(res == LE_OK)
+    {
+        LE_INFO("EXT_ADC3 value is: %d", adc3_value);
+    }
+    else
+    {
+        LE_ERROR("Check ADC3 value FAILED");
+        return;
+    }  
 }
