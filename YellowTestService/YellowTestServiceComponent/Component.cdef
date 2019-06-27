@@ -1,6 +1,7 @@
 sources:
 {
     YellowTestServiceComponent.c
+    eeprom.c
 }
 
 cflags:
@@ -15,6 +16,7 @@ requires:
         modemServices/le_sim.api
         modemServices/le_mrc.api
         modemServices/le_adc.api
+        le_spi.api
     }
 }
 

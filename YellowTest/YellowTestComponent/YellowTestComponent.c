@@ -37,17 +37,27 @@ COMPONENT_INIT
         return;
     }
 
-    res = yellow_test_SDCard();
+    // res = yellow_test_SDCard();
+    // if(res == LE_OK)
+    // {
+    //     LE_INFO("SDCard Read/Wrire test PASSED");
+    // }
+    // else
+    // {
+    //     LE_ERROR("SDCard Read/Wrire test FAILED");
+    //     return;
+    // }  
+
+    res = yellow_test_SPIEeprom();
     if(res == LE_OK)
     {
-        LE_INFO("SDCard Read/Wrire test PASSED");
+        LE_INFO("SPIEepromRead/Wrire test PASSED");
     }
     else
     {
-        LE_ERROR("SDCard Read/Wrire test FAILED");
+        LE_ERROR("SPIEeprom Read/Wrire test FAILED");
         return;
     }  
-
 
     //heck main bus i2c
     res = yellow_test_MainBusI2C();

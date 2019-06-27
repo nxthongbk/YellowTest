@@ -99,4 +99,13 @@ FUNCTION le_result_t Adc3Read
     int32 value OUT
 );
 
+/**
+ * @Description Test Read/Write EEPROM SPI
+ * @return
+ *  return LE_OK if success, otherwise LE_FAULT  
+**/
+
+FUNCTION le_result_t SPIEeprom
+(
+);
 

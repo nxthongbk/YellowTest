@@ -1,6 +1,7 @@
 #include "legato.h"
 #include "interfaces.h"
 #include "i2c-utils.h"
+#include "eeprom.h"
 
 #define I2C_HUB_MAIN_BUS    0x00
 #define I2C_HUB_PORT_3      0x08
@@ -10,7 +11,11 @@
 #define I2C_HUB_PORT_ALL    0x0F
 #define BMI160_I2C_ADDR     0x68
 
+#define LEN(x)  (sizeof(x) / sizeof(x[0]))
+
 char i2c_bus[256] = "/dev/i2c-0";
+
+
 
 //--------------------------------------------------------------------------------------------------
 /**
@@ -384,6 +389,55 @@ le_result_t yellow_test_Adc3Read
     }
     return result;
 }
+
+//--------------------------------------------------------------------------------------------------
+/**
+ * Check: Read SPI EEPROM on IOT Test Card.
+ *
+ */
+//--------------------------------------------------------------------------------------------------
+le_result_t yellow_test_SPIEeprom
+(
+    void
+)
+{
+    le_result_t result;
+    int res;
+    //int8_t* value;
+
+    res = RunSystemCommand("/legato/systems/current/bin/app start spiService");
+    if (res != 0 )
+    {
+        LE_INFO("spiService is started");
+    }
+
+    result = eeprom_init("spidev0.0", 1000000);
+    if (result == LE_FAULT)
+    {
+        LE_ERROR("Couldn't Init eeprom");
+        return LE_FAULT;
+    }
+
+
+    uint8_t writeData[] = "123456789";
+    result = eeprom_write(0x1000, writeData, 1);
+    if (result == LE_FAULT)
+    {
+        LE_ERROR("Couldn't write eeprom");
+        return LE_FAULT;
+    }
+
+
+    // result = eeprom_read(0x0000, value, 1)
+    // if (result == LE_FAULT)
+    // {
+    //     LE_ERROR("Couldn't read eeprom");
+    //     return LE_FAULT;
+    // }
+
+    return result;
+}
+
 
 
 COMPONENT_INIT
