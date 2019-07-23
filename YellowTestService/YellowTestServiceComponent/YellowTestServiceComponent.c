@@ -13,7 +13,7 @@
 
 #define LEN(x)  (sizeof(x) / sizeof(x[0]))
 
-char i2c_bus[256] = "/dev/i2c-0";
+char i2c_bus[256] = "/dev/i2c-4";
 
 
 
@@ -103,7 +103,7 @@ le_result_t yellow_test_CheckSimState(void)
     }
     else
     {
-    return LE_FAULT;
+        return LE_FAULT;
     }
 }
 
@@ -199,26 +199,26 @@ le_result_t yellow_test_MainBusI2C( void )
         return LE_FAULT;
     }
 
-    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 0 | grep \" 50 \"");
+    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 4 | grep \" 50 \"");
     if (res != 0 )
     {
         return LE_FAULT;
     }
 
-    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 0 | grep \" 71 \"");
+    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 4 | grep \" 71 \"");
     if (res != 0 )
     {
         return LE_FAULT;
     }
 
 
-    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 0 | grep \" 08 \"");
+    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 4 | grep \" 08 \"");
     if (res != 0 )
     {
         return LE_FAULT;
     }
 
-    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 0 | grep \" 34 \"");
+    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 4 | grep \" 34 \"");
     if (res != 0 )
     {
         return LE_FAULT;
@@ -243,30 +243,25 @@ le_result_t yellow_test_Port1HubI2C( void )
         return LE_FAULT;
     }
  
-    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 0 | grep \" 50 \"");
+    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 0 | grep \" 44 \"");
     if (res != 0 )
     {
         return LE_FAULT;
     }
 
-    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 0 | grep \" 71 \"");
+    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 4 | grep \" 6b \"");
     if (res != 0 )
     {
         return LE_FAULT;
     }
 
 
-    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 0 | grep \" 08 \"");
+    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 4 | grep \" 55 \"");
     if (res != 0 )
     {
         return LE_FAULT;
     }
 
-    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 0 | grep \" 34 \"");
-    if (res != 0 )
-    {
-        return LE_FAULT;
-    }
 
     return LE_OK;
 }
@@ -288,13 +283,13 @@ le_result_t yellow_test_Port2HubI2C( void )
         return LE_FAULT;
     }
 
-    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 0 | grep \" 68 \"");
+    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 4 | grep \" 68 \"");
     if (res != 0 )
     {
         return LE_FAULT;
     }
 
-    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 0 | grep \" 76 \"");
+    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 4 | grep \" 76 \"");
     if (res != 0 )
     {
         return LE_FAULT;
@@ -319,19 +314,19 @@ le_result_t yellow_test_Port3HubI2C( void )
         return LE_FAULT;
     }
 
-    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 0 | grep \" 3e \"");
+    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 4 | grep \" 3e \"");
     if (res != 0 )
     {
         return LE_FAULT;
     }
 
-    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 0 | grep \" 51 \"");
+    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 4 | grep \" 51 \"");
     if (res != 0 )
     {
         return LE_FAULT;
     }
 
-    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 0 | grep \" 55 \"");
+    res = RunSystemCommand("/usr/sbin/i2cdetect -y -r 4 | grep \" 55 \"");
     if (res != 0 )
     {
         return LE_FAULT;
@@ -373,15 +368,14 @@ le_result_t yellow_test_AcceGyroRead
  *
  */
 //--------------------------------------------------------------------------------------------------
-le_result_t yellow_test_Adc3Read
+le_result_t yellow_test_BatteryVoltage
 (
     int32_t* value
 )
 {
     le_result_t result;
-    i2c_hub_select_port(0x71, I2C_HUB_PORT_IOT);
 
-    result = le_adc_ReadValue("EXT_ADC3", value);
+    result = le_adc_ReadValue("EXT_ADC1", value);
 
     if (result == LE_FAULT)
     {
@@ -390,53 +384,124 @@ le_result_t yellow_test_Adc3Read
     return result;
 }
 
+
+//--------------------------------------------------------------------------------------------------
+/**
+ * Check: Read ADC on IOT Test Card.
+ *
+ */
+//--------------------------------------------------------------------------------------------------
+le_result_t yellow_test_Adc3Read
+(
+    int32_t* value
+)
+{
+    le_result_t result;
+
+    result = le_adc_ReadValue("EXT_ADC3", value);
+
+    if (result == LE_FAULT)
+    {
+        LE_INFO("Couldn't get ADC value");
+    }
+
+    return result;
+}
+
+//--------------------------------------------------------------------------------------------------
+/**
+ * Check:assert IoT card reset and read it back via GPIO3
+ *
+ */
+//--------------------------------------------------------------------------------------------------
+le_result_t yellow_test_IoTCardReset
+(
+    void
+)
+{
+    le_result_t result;
+
+    //assert IoT card reset
+    result = le_gpioPin2_SetPushPullOutput(LE_GPIOPIN2_ACTIVE_LOW, true);
+    if(result != LE_OK)
+    {
+        LE_INFO("Couldn't SetPushPullOutput for IoT Card Reset");
+    }
+
+    //Read back IOT Card Status
+    int state = le_gpioPin7_Read();
+
+    if(state == 0)
+    {
+        LE_INFO("Reset is detected");
+    }
+
+    result = le_gpioPin2_SetPushPullOutput(LE_GPIOPIN2_ACTIVE_HIGH, true);
+    if(result != LE_OK)
+    {
+        LE_INFO("Couldn't SetPushPullOutput for IoT Card Reset");
+    }
+
+    state = le_gpioPin7_Read();
+
+    if(state == 0)
+    {
+        LE_INFO("Reset is detected");
+        return LE_FAULT;
+    }
+
+    return result;
+}
+
+
+
 //--------------------------------------------------------------------------------------------------
 /**
  * Check: Read SPI EEPROM on IOT Test Card.
  *
  */
 //--------------------------------------------------------------------------------------------------
-le_result_t yellow_test_SPIEeprom
-(
-    void
-)
-{
-    le_result_t result;
-    int res;
-    //int8_t* value;
-
-    res = RunSystemCommand("/legato/systems/current/bin/app start spiService");
-    if (res != 0 )
-    {
-        LE_INFO("spiService is started");
-    }
-
-    result = eeprom_init("spidev0.0", 1000000);
-    if (result == LE_FAULT)
-    {
-        LE_ERROR("Couldn't Init eeprom");
-        return LE_FAULT;
-    }
+// le_result_t yellow_test_SPIEeprom
+// (
+//     void
+// )
+// {
+//     le_result_t result;
+//     uint8_t value = 0;
 
 
-    uint8_t writeData[] = "123456789";
-    result = eeprom_write(0x1000, writeData, 1);
-    if (result == LE_FAULT)
-    {
-        LE_ERROR("Couldn't write eeprom");
-        return LE_FAULT;
-    }
+//     result = eeprom_init("spidev1.0", 1000000);
+//     if (result == LE_FAULT)
+//     {
+//         LE_ERROR("Couldn't Init eeprom");
+//         return LE_FAULT;
+//     }
 
 
-    // result = eeprom_read(0x0000, value, 1)
-    // if (result == LE_FAULT)
-    // {
-    //     LE_ERROR("Couldn't read eeprom");
-    //     return LE_FAULT;
-    // }
+//     uint8_t writeData[] = "123456789";
+//     result = eeprom_write(0x0000, writeData, 1);
+//     if (result == LE_FAULT)
+//     {
+//         LE_ERROR("Couldn't write eeprom");
+//         return LE_FAULT;
+//     }
 
-    return result;
-}
+
+//     result = eeprom_read(0x0000, &value, 1);
+//     if (result == LE_FAULT)
+//     {
+//         LE_ERROR("Couldn't read eeprom");
+//         return LE_FAULT;
+//     }
+//     else
+//     {
+//         LE_INFO("EEPROM read: %c", value);
+//     }
+
+//     eeprom_deinit();
+
+//     return result;
+// }
 
 
 
