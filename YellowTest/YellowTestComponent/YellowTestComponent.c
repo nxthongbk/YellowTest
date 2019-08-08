@@ -28,6 +28,7 @@ COMPONENT_INIT
     if (res == LE_OK)
     {
         LE_INFO("Check SIM state: PASSED\n");
+        puts("Check SIM state: PASSED");
     }
     else
     {
@@ -39,8 +40,10 @@ COMPONENT_INIT
     res = yellow_test_MeasureSignalStrength(&signal_qual);
     if (res == LE_OK)
     {
-        LE_INFO("Signal strength quality = %d\n", signal_qual);
+        LE_INFO("Signal strength quality = %d\n", signal_qual); 
+        puts("Signal strength quality = 123 ");
         LE_INFO("Check signal quality: PASSED\n");
+        //puts("\nCheck signal quality: PASSED\n");
     }
     else
     {
@@ -63,7 +66,9 @@ COMPONENT_INIT
     if(res == LE_OK)
     {
         LE_INFO("Battery value is: %d", battery_value);
+        //puts("Battery value is: " + battery_value);
         LE_INFO("Read Battery Voltage: PASSED");
+        //puts("\nRead Battery Voltage: PASSED\n");
     }
     else
     {
@@ -78,7 +83,10 @@ COMPONENT_INIT
         {
             LE_INFO("ADC1, ADC2, ADC3, ADC4 is: %d, %d, %d, %d",adc1_i2c_value, adc2_i2c_value,
                                                                 adc3_i2c_value, adc4_i2c_value);
+            //puts("ADC1: " + adc1_i2c_value);
+
             LE_INFO("Check IoTCardReadADCs: PASSED");
+            //puts("Read Battery Voltage: PASSED\n");
         }
         else
         {
@@ -91,10 +99,24 @@ COMPONENT_INIT
         return;
     }
 
+    res = yellow_test_UARTLoopBack();
+    if(res == LE_OK)
+    {
+        LE_INFO("Check UART Loop back: PASSED");
+        //puts("Check IOTCardReset: PASSED\n");
+    }
+    else
+    {
+        LE_ERROR("UARTLoopBack FAILED");
+        return;
+    }
+
+
     res = yellow_test_IoTCardReset();
     if(res == LE_OK)
     {
         LE_INFO("Check IOTCardReset: PASSED");
+        //puts("Check IOTCardReset: PASSED\n");
     }
     else
     {
@@ -166,7 +188,9 @@ COMPONENT_INIT
     if (res == LE_OK)
     {
         LE_INFO("chip id = %x", data);
+        //puts("chip id = " + data);
         LE_INFO("Read accelerometer and gyroscope connection: PASSED\n");
+        //puts("Read accelerometer and gyroscope connection: PASSED\n");
     }
     else
     {
@@ -187,12 +211,15 @@ COMPONENT_INIT
         else
         {
             LE_INFO("Read ADC3: PASSED");
+            //puts("Read ADC3: PASSED\n");
             LE_INFO("EXT_ADC3 value is: %d", adc3_value);
+            //puts("EXT_ADC3 value is: " + adc3_value);
         }
     }
     else
     {
         LE_ERROR("Check ADC3 value FAILED");
         return;
-    }  
+    }
+    
 }

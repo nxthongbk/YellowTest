@@ -1,8 +1,8 @@
 #include "legato.h"
 #include "interfaces.h"
 #include "i2c-utils.h"
-#include "eeprom.h"
 #include "fileUtils.h"
+#include "uart.h"
 
 #define I2C_HUB_MAIN_BUS    0x00
 #define I2C_HUB_PORT_3      0x08
@@ -47,42 +47,6 @@ int i2c_hub_select_port(uint8_t hub_address, uint8_t port)
     return result;
 }
 
-
-//--------------------------------------------------------------------------------------------------
-/**
- * runs the command
- */
-//--------------------------------------------------------------------------------------------------
-static int RunSystemCommand(
-    char *commandStringPtr)
-{
-    int systemResult;
-
-    if (NULL == commandStringPtr)
-    {
-        LE_ERROR("ERROR Parameter is NULL.");
-        return -1;
-    }
-    if ('\0' == *commandStringPtr)
-    {
-        LE_INFO("INFO Nothing to execute.");
-        return -1;
-    }
-
-    systemResult = system(commandStringPtr);
-    // Return value of -1 means that the fork() has failed (see man system).
-    if (0 == WEXITSTATUS(systemResult))
-    {
-        LE_INFO("Success: %s", commandStringPtr);
-        return 0;
-    }
-    else
-    {
-        LE_ERROR("Error %s Failed: (%d)", commandStringPtr, systemResult);
-        return -1;
-    }
-}
-
 //--------------------------------------------------------------------------------------------------
 /**
  * Check: SIM State.
@@ -124,65 +88,35 @@ le_result_t yellow_test_MeasureSignalStrength
 
 //--------------------------------------------------------------------------------------------------
 /**
- * Check: SD Card Read/Write.
+ * Check: Check Yellow UART LoopBack.
  *
  */
 //--------------------------------------------------------------------------------------------------
-
-le_result_t yellow_test_SDCard( void )
+le_result_t yellow_test_UARTLoopBack(void)
 {
-    int res;
+    const char * msg = "The quick brown Fox jumps over the lazy Dog 0123456789\n";
+    char buffer[64];
+    memset(buffer, 0, 64);
+    int fd = 0;
 
-    res = RunSystemCommand("/sbin/rmmod msm_sdcc");
-    if (res != 0 )
-    {
-        return LE_FAULT;
+    fd = serial_open("/dev/ttyHS0");
+    if (fd < 0) {
+        fprintf(stderr, "Failed to open serial port '/dev/ttyHS0'\n");
+        exit(EXIT_FAILURE);
     }
 
-    res = RunSystemCommand("/sbin/modprobe msm_sdcc");
-    if (res != 0 )
-    {
+    serial_write(fd, msg, strlen(msg));
+    serial_wait_for_data(3000);
+    serial_read(fd, buffer, 64);
+    LE_INFO("Transfer msg: '%s'", msg);
+    LE_INFO("Received msg: '%s'", buffer);
+    if (strncmp(buffer, msg, strlen(msg)) == 0) {
+        return LE_OK;
+    } else {
+        LE_INFO("Failed to check UART data loopback");
         return LE_FAULT;
     }
-
-    res = RunSystemCommand("/bin/mkdir /tmp/sd");
-    if (res != 0 )
-    {
-        return LE_FAULT;
-    }
-
-    res = RunSystemCommand("/bin/mount -ofmask=0111 -odmask=0000 -osmackfsdef=sd /dev/mmcblk0p1 /tmp/sd/");
-    if (res != 0 )
-    {
-        return LE_FAULT;
-    }
-
-    //Create file
-    res = RunSystemCommand("/bin/touch /tmp/sd/log.txt");
-    if (res != 0 )
-    {
-        return LE_FAULT;
-    }
-
-    //write file
-    res = RunSystemCommand("/bin/echo foo >> /tmp/sd/log.txt");
-    if (res != 0 )
-    {
-        return LE_FAULT;
-    }
-
-    //read file
-    res = RunSystemCommand("/bin/cat /tmp/sd/log.txt");
-    if (res != 0 )
-    {
-        return LE_FAULT;
-    }
-
-    return LE_OK;
 }
-
-
-
 
 //--------------------------------------------------------------------------------------------------
 /**
@@ -232,7 +166,6 @@ le_result_t yellow_test_BatteryVoltage
     }
     return result;
 }
-
 
 //--------------------------------------------------------------------------------------------------
 /**

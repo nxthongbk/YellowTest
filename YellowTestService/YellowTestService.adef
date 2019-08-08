@@ -30,6 +30,8 @@ bindings:
     yellowtestservice.YellowTestServiceComponent.le_gpioPin7 -> gpioService.le_gpioPin7
     yellowtestservice.YellowTestServiceComponent.le_gpioPin2 -> gpioService.le_gpioPin2
     //yellowtestservice.YellowTestServiceComponent.le_spi -> spiService.le_spi
+    yellowtestservice.YellowTestServiceComponent.CTS_TEST -> gpioService.le_gpioPin8
+    yellowtestservice.YellowTestServiceComponent.RTS_TEST -> gpioService.le_gpioPin13
 }
 
 requires:

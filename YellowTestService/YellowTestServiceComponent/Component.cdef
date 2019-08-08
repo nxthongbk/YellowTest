@@ -1,7 +1,7 @@
 sources:
 {
     YellowTestServiceComponent.c
-    //eeprom.c
+    uart.c
 }
 
 cflags:
@@ -18,7 +18,8 @@ requires:
         modemServices/le_adc.api
         le_gpioPin7 = le_gpio.api
         le_gpioPin2 = le_gpio.api
-        //le_spi.api
+        CTS_TEST = le_gpio.api
+        RTS_TEST = le_gpio.api
     }
     component:
     {
